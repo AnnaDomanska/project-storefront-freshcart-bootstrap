@@ -20,7 +20,7 @@ import { ProductModel } from '../../models/product.model';
 import { PaginationQueryModel } from '../../query-models/pagination.query-model';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
-import { format } from 'path';
+
 
 @Component({
   selector: 'app-category-products',
