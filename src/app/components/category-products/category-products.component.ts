@@ -22,6 +22,9 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryProductsComponent {
+
+  readonly selectedSortingOption: FormControl = new FormControl('Featured');
+
   readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
     { name: 'Featured', property: 'featureValue', direction: 'desc' },
     { name: 'Price: Low To High', property: 'price', direction: 'asc' },
