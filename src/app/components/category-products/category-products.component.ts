@@ -107,7 +107,7 @@ export class CategoryProductsComponent {
   ]).pipe(
     map(([products, currentValues]) => {
       let arr: number[] = [];
-      for (let i = 0; i < products.length / currentValues.limit; i++) {
+      for (let i = 0; i < Math.ceil(products.length / currentValues.limit); i++) {
         arr.push(i + 1);
       }
       return arr;
