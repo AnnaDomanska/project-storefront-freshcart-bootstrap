@@ -114,6 +114,19 @@ export class CategoryProductsComponent {
     })
   );
 
+
+  ratingToStars(value: number): number[] {
+    const arr: number[] = [];
+      
+    for(let i = 0; i < 5; i++) {
+      if(value - i >= 1) {arr.push(1)}
+      else if(value - i < 1 && value - i > 0) {arr.push(0.5)}
+      else arr.push(0);
+    } 
+
+    return arr;
+  }
+  
   onSortingSelectionChanged(sortingOption: SortingOptionsQueryModel): void {
     this._router.navigate([], {
       queryParams: {
