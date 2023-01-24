@@ -3,9 +3,9 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import {
   debounceTime,
   filter,
@@ -25,6 +25,7 @@ import { PaginationQueryModel } from '../../query-models/pagination.query-model'
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
 import { StoresService } from '../../services/stores.service';
+import { ConditionalExpr } from '@angular/compiler';
 
 @Component({
   selector: 'app-category-products',
@@ -46,7 +47,10 @@ export class CategoryProductsComponent {
   readonly searchStore: FormControl = new FormControl();
   readonly stores$: Observable<StoreModel[]> = this._storesService
     .getAll()
-    .pipe(shareReplay(1));
+    .pipe(
+      tap((stores) => this.createStoresFormControls(stores)),
+      shareReplay(1)
+    );
 
   readonly displayedStores$: Observable<StoreModel[]> = combineLatest([
     this.stores$,
@@ -60,7 +64,11 @@ export class CategoryProductsComponent {
   );
 
   // sort
-  readonly selectedSortingOption: FormControl = new FormControl({ name: 'Featured', property: 'featureValue', direction: 'desc' });
+  readonly selectedSortingOption: FormControl = new FormControl({
+    name: 'Featured',
+    property: 'featureValue',
+    direction: 'desc',
+  });
   readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
     { name: 'Featured', property: 'featureValue', direction: 'desc' },
     { name: 'Price: Low To High', property: 'price', direction: 'asc' },
@@ -177,23 +185,9 @@ export class CategoryProductsComponent {
     })
   );
 
-  ratingToStars(value: number): number[] {
-    const arr: number[] = [];
-
-    for (let i = 0; i < 5; i++) {
-      if (value - i >= 1) {
-        arr.push(1);
-      } else if (value - i < 1 && value - i > 0) {
-        arr.push(0.5);
-      } else arr.push(0);
-    }
-
-    return arr;
-  }
-
-  readonly stores: FormControl = new FormControl();
-  readonly priceFrom: FormControl = new FormControl();
-  readonly priceTo: FormControl = new FormControl();
+  readonly priceFrom: FormControl = new FormControl(this._activatedRoute.snapshot.queryParams['priceFrom']);
+  readonly stores: FormGroup = new FormGroup({store: new FormControl('')});
+  readonly priceTo: FormControl = new FormControl(this._activatedRoute.snapshot.queryParams['priceYo']);
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -229,6 +223,23 @@ export class CategoryProductsComponent {
             queryParamsHandling: 'merge',
           })
         )
+      )
+      .subscribe();
+
+    this.stores.valueChanges
+      .pipe(
+        tap((data) => {
+          const storesParamSet = Object.keys(data).filter((key) => data[key]);
+          this._router.navigate([], {
+            queryParams: {
+              stores:
+                storesParamSet.length > 0
+                  ? [...storesParamSet].sort().join(',')
+                  : null,
+            },
+            queryParamsHandling: 'merge',
+          });
+        })
       )
       .subscribe();
   }
@@ -282,30 +293,35 @@ export class CategoryProductsComponent {
       queryParams: { rating: value },
       queryParamsHandling: 'merge',
     });
-
   }
 
-  onStoresChanged(value: string) {
+  ratingToStars(value: number): number[] {
+    const arr: number[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      if (value - i >= 1) {
+        arr.push(1);
+      } else if (value - i < 1 && value - i > 0) {
+        arr.push(0.5);
+      } else arr.push(0);
+    }
+
+    return arr;
+  }
+
+  createStoresFormControls(stores: StoreModel[]): void {
     this.currentFilterOptions$
       .pipe(
         take(1),
-        tap((data) => {
-          const storesParamSet = data.stores;
-
-          storesParamSet.has(value)
-            ? storesParamSet.delete(value)
-            : storesParamSet.add(value);
-          console.log(storesParamSet);
-          if (storesParamSet.size > 0) {
-            this._router.navigate([], {
-              queryParams: {
-                stores: [...storesParamSet].sort().join(','),
-              },
-              queryParamsHandling: 'merge',
-            });
-          } else {
-            this._router.navigate([]);
-          }
+        tap((currentFilterOptions) => {
+          stores.forEach((store) =>
+            this.stores.addControl(
+              store.id,
+              new FormControl(
+                currentFilterOptions.stores.has(store.id) ? true : false
+              )
+            )
+          );
         })
       )
       .subscribe();
