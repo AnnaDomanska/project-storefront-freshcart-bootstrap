@@ -37,9 +37,11 @@
                                 {{products.length}} Products found
                             </div>
                             <div class="col-3">
-                                <select class="form-select">
+
+                                <select class="form-select" [formControl]="selectedSortingOption">
                                     <option *ngFor="let item of sortingOptions$ | async" [value]="item"
                                         (click)="onSortingSelectionChanged(item)">{{item.name}}
+
                                     </option>
                                 </select>
                             </div>

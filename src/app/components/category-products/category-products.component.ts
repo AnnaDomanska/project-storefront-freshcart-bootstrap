@@ -31,6 +31,7 @@ import { FormControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryProductsComponent {
+
   readonly categoryData$: Observable<CategoryModel> =
     this._activatedRoute.params.pipe(
       switchMap((data) => this._categoriesService.getOne(data['categoryId'])),
@@ -41,7 +42,7 @@ export class CategoryProductsComponent {
     .pipe(shareReplay(1));
 
   // sort
-
+readonly selectedSortingOption: FormControl = new FormControl('Featured');
   readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
     { name: 'Featured', property: 'featureValue', direction: 'desc' },
     { name: 'Price: Low To High', property: 'price', direction: 'asc' },
