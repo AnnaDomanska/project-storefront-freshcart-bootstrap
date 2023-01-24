@@ -14,8 +14,8 @@
                         aria-label="default input example" [formControl]="searchStore">
                     <div *ngFor="let item of displayedStores$ | async" class="form-check mb-2">
                         <div *ngIf="currentFilterOptions$ | async as currentFilterOptions">
-                            <input [id]="item.id" class="form-check-input" type="checkbox" 
-                                (click)="onStoresChanged(item.id)" [checked]="currentFilterOptions.stores.has(item.id)"> <label [for]="item.id"
+                            <input [id]="item" class="form-check-input" type="checkbox" 
+                                (click)="onStoresChanged(item.id)" [checked]="currentFilterOptions.stores.has(item.id)"> <label [for]="item"
                                 class="form-check-label">{{item.name}}</label>
                         </div>
                     </div>
@@ -31,14 +31,15 @@
 
                 <div class="row">
                     <h5>Rating</h5>
-                    <div *ngFor="let item of ratingFilterOptions$ | async" class="form-check mb-2">
+                    <div *ngFor="let ratingOption of ratingFilterOptions$ | async" class="form-check mb-2">
                         <div *ngIf="currentFilterOptions$ | async as currentFilterOptions">
-                            <input [id]="item" class="form-check-input" type="radio" name="item"
-                                (click)="onRatingFilterChanged(item)" [checked]="item === +currentFilterOptions.rating">
-                            <label [for]="item" class="form-check-label"> <small class="text-warning"> <i
-                                *ngFor="let val of ratingToStars(item)" class="bi"
+                            <input [id]="ratingOption" class="form-check-input" type="radio" name="item"
+                                (click)="onRatingFilterChanged(ratingOption)" [checked]="ratingOption === +currentFilterOptions.rating">
+                            <label [for]="ratingOption" class="form-check-label"> <small class="text-warning"> <i
+                                *ngFor="let val of ratingToStars(ratingOption)" class="bi"
                                 [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
-                        </small></label>
+                        </small>
+                     </label>
                         </div>
 
                     </div>

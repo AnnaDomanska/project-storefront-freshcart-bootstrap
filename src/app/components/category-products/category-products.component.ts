@@ -25,8 +25,6 @@ import { PaginationQueryModel } from '../../query-models/pagination.query-model'
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
 import { StoresService } from '../../services/stores.service';
-import { timeStamp } from 'console';
-import { StoreProductsComponent } from '../store-products/store-products.component';
 
 @Component({
   selector: 'app-category-products',
@@ -62,7 +60,7 @@ export class CategoryProductsComponent {
   );
 
   // sort
-  readonly selectedSortingOption: FormControl = new FormControl('Featured');
+  readonly selectedSortingOption: FormControl = new FormControl({ name: 'Featured', property: 'featureValue', direction: 'desc' });
   readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
     { name: 'Featured', property: 'featureValue', direction: 'desc' },
     { name: 'Price: Low To High', property: 'price', direction: 'asc' },
@@ -102,7 +100,8 @@ export class CategoryProductsComponent {
     this.sortingOption$,
   ]).pipe(
     map(([products, category, currentFilterOptions, sortingOption]) => {
-     {        return products
+      {
+        return products
           .filter((product) => product.categoryId === category.id)
           .sort((a, b) => {
             if (
@@ -122,14 +121,17 @@ export class CategoryProductsComponent {
               product.price >= +currentFilterOptions.priceFrom &&
               product.price <= +currentFilterOptions.priceTo
           )
-          .filter((product) => currentFilterOptions.stores.size !== 0 ?
-            product.storeIds.find((storeId: string) =>
-              currentFilterOptions.stores.has(storeId)
-            ) : true
+          .filter((product) =>
+            currentFilterOptions.stores.size !== 0
+              ? product.storeIds.find((storeId: string) =>
+                  currentFilterOptions.stores.has(storeId)
+                )
+              : true
           )
-          .filter(
-            (product) => currentFilterOptions.rating !== 0 ?
-              Math.floor(product.ratingValue) === currentFilterOptions.rating : true
+          .filter((product) =>
+            currentFilterOptions.rating !== 0
+              ? Math.floor(product.ratingValue) === +currentFilterOptions.rating
+              : true
           );
       }
     }),
@@ -280,6 +282,7 @@ export class CategoryProductsComponent {
       queryParams: { rating: value },
       queryParamsHandling: 'merge',
     });
+
   }
 
   onStoresChanged(value: string) {
@@ -307,5 +310,4 @@ export class CategoryProductsComponent {
       )
       .subscribe();
   }
-
 }
