@@ -136,6 +136,21 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
     })
   );
 
+
+
+  ratingToStars(value: number): number[] {
+    const arr: number[] = [];
+      
+    for(let i = 0; i < 5; i++) {
+      if(value - i >= 1) {arr.push(1)}
+      else if(value - i < 1 && value - i > 0) {arr.push(0.5)}
+      else arr.push(0);
+    } 
+
+    return arr;
+  }
+  
+
   readonly priceFrom: FormControl = new FormControl();
   readonly priceTo: FormControl = new FormControl();
 
@@ -175,6 +190,7 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
       )
       .subscribe();
   }
+
 
   onSortingSelectionChanged(sortingOption: SortingOptionsQueryModel): void {
     this._router.navigate([], {
