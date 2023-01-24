@@ -146,12 +146,14 @@ export class CategoryProductsComponent {
     shareReplay(1)
   );
 
+  
   readonly currentPaginationValues$: Observable<PaginationQueryModel> =
     this._activatedRoute.queryParams.pipe(
       map((data) => {
-        return data['pageSize'] || data['pageNumber']
-          ? { limit: +data['pageSize'], page: +data['pageNumber'] }
-          : { limit: 5, page: 1 };
+        return {
+          limit: data['pageSize'] ? Math.max(+data['pageSize'], 5) : 5,
+          page: data['pageNumber'] ? Math.max(+data['pageNumber'], 1) : 1,
+        };
       })
     );
 
@@ -185,9 +187,13 @@ export class CategoryProductsComponent {
     })
   );
 
-  readonly priceFrom: FormControl = new FormControl(this._activatedRoute.snapshot.queryParams['priceFrom']);
-  readonly stores: FormGroup = new FormGroup({store: new FormControl('')});
-  readonly priceTo: FormControl = new FormControl(this._activatedRoute.snapshot.queryParams['priceYo']);
+  readonly priceFrom: FormControl = new FormControl(
+    this._activatedRoute.snapshot.queryParams['priceFrom']
+  );
+  readonly stores: FormGroup = new FormGroup({ store: new FormControl('') });
+  readonly priceTo: FormControl = new FormControl(
+    this._activatedRoute.snapshot.queryParams['priceYo']
+  );
 
   constructor(
     private _activatedRoute: ActivatedRoute,
