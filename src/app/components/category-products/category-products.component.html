@@ -63,9 +63,11 @@
                                 {{products.length}} Products found
                             </div>
                             <div class="col-3">
-                                <select class="form-select">
+
+                                <select class="form-select" [formControl]="selectedSortingOption">
                                     <option *ngFor="let item of sortingOptions$ | async" [value]="item"
                                         (click)="onSortingSelectionChanged(item)">{{item.name}}
+
                                     </option>
                                 </select>
                             </div>
@@ -99,14 +101,14 @@
 
                                             <div>
 
-                                                <small class="text-warning"> <i class="bi bi-star-fill"></i>
-                                                    <i class="bi bi-star-fill"></i>
-                                                    <i class="bi bi-star-fill"></i>
-                                                    <i class="bi bi-star-fill"></i>
-                                                    <i class="bi bi-star-fill"></i></small> <span
-                                                    class="text-muted small">{{item.ratingValue}}({{item.ratingCount}})</span>
-                                            </div>
 
+                                            </div>
+                                            <small class="text-warning"> <i
+                                                    *ngFor="let val of ratingToStars(item.ratingValue)" class="bi"
+                                                    [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
+                                            </small>
+                                            <span
+                                                class="text-muted small">{{item.ratingValue}}({{item.ratingCount}})</span>
 
                                             <!-- price -->
                                             <div><span class="text-dark">{{item.price | currency}}</span>
