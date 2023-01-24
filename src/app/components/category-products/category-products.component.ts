@@ -102,11 +102,7 @@ export class CategoryProductsComponent {
     this.sortingOption$,
   ]).pipe(
     map(([products, category, currentFilterOptions, sortingOption]) => {
-      if (
-        currentFilterOptions.rating !== 0 ||
-        currentFilterOptions.stores.size !== 0
-      ) {
-        return products
+     {        return products
           .filter((product) => product.categoryId === category.id)
           .sort((a, b) => {
             if (
@@ -126,35 +122,14 @@ export class CategoryProductsComponent {
               product.price >= +currentFilterOptions.priceFrom &&
               product.price <= +currentFilterOptions.priceTo
           )
-          .filter((product) =>
+          .filter((product) => currentFilterOptions.stores.size !== 0 ?
             product.storeIds.find((storeId: string) =>
               currentFilterOptions.stores.has(storeId)
-            )
+            ) : true
           )
           .filter(
-            (product) =>
-              Math.ceil(product.ratingValue) === currentFilterOptions.rating
-          );
-      } else {
-        return products
-          .filter((product) => product.categoryId === category.id)
-          .sort((a, b) => {
-            if (
-              a[sortingOption.sortBy as keyof ProductModel] >
-              b[sortingOption.sortBy as keyof ProductModel]
-            )
-              return sortingOption.order === 'asc' ? 1 : -1;
-            if (
-              a[sortingOption.sortBy as keyof ProductModel] <
-              b[sortingOption.sortBy as keyof ProductModel]
-            )
-              return sortingOption.order === 'asc' ? -1 : 1;
-            return 0;
-          })
-          .filter(
-            (product) =>
-              product.price >= +currentFilterOptions.priceFrom &&
-              product.price <= +currentFilterOptions.priceTo
+            (product) => currentFilterOptions.rating !== 0 ?
+              Math.floor(product.ratingValue) === currentFilterOptions.rating : true
           );
       }
     }),
@@ -332,4 +307,5 @@ export class CategoryProductsComponent {
       )
       .subscribe();
   }
+
 }
