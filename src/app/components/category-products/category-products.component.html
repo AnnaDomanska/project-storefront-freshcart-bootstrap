@@ -20,6 +20,7 @@
                         </div>
                     </div>
                 </div>
+           
                 <div class="row">
                     <h5>Price</h5>
                     <input class="form-control" type="text" placeholder="Price From" aria-label="default input example"
@@ -34,12 +35,15 @@
                         <div *ngIf="currentFilterOptions$ | async as currentFilterOptions">
                             <input [id]="item" class="form-check-input" type="radio" name="item"
                                 (click)="onRatingFilterChanged(item)" [checked]="item === +currentFilterOptions.rating">
-                            <label [for]="item" class="form-check-label">{{item}}</label>
+                            <label [for]="item" class="form-check-label"> <small class="text-warning"> <i
+                                *ngFor="let val of ratingToStars(item)" class="bi"
+                                [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
+                        </small></label>
                         </div>
-                        
+
                     </div>
                 </div>
-                
+
 
 
 

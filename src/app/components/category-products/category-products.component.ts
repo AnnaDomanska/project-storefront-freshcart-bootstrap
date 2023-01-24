@@ -28,7 +28,6 @@ import { StoresService } from '../../services/stores.service';
 import { timeStamp } from 'console';
 import { StoreProductsComponent } from '../store-products/store-products.component';
 
-
 @Component({
   selector: 'app-category-products',
   styleUrls: ['./category-products.component.scss'],
@@ -37,7 +36,6 @@ import { StoreProductsComponent } from '../store-products/store-products.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryProductsComponent {
-
   readonly categoryData$: Observable<CategoryModel> =
     this._activatedRoute.params.pipe(
       switchMap((data) => this._categoriesService.getOne(data['categoryId'])),
@@ -64,7 +62,7 @@ export class CategoryProductsComponent {
   );
 
   // sort
-readonly selectedSortingOption: FormControl = new FormControl('Featured');
+  readonly selectedSortingOption: FormControl = new FormControl('Featured');
   readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
     { name: 'Featured', property: 'featureValue', direction: 'desc' },
     { name: 'Price: Low To High', property: 'price', direction: 'asc' },
@@ -73,7 +71,6 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
   ]);
 
   readonly ratingFilterOptions$: Observable<number[]> = of([5, 4, 3, 2]);
-  readonly hardcodeStoreIds$: Observable<string[]> = of(['1', '2', '3', '4']);
 
   readonly sortingOption$: Observable<{ sortBy: string; order: string }> =
     this._activatedRoute.queryParams.pipe(
@@ -105,17 +102,12 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
     this.sortingOption$,
   ]).pipe(
     map(([products, category, currentFilterOptions, sortingOption]) => {
-      if (currentFilterOptions.rating === 0) {
+      if (
+        currentFilterOptions.rating !== 0 ||
+        currentFilterOptions.stores.size !== 0
+      ) {
         return products
           .filter((product) => product.categoryId === category.id)
-          .filter(
-            (product) =>
-              product.price >= +currentFilterOptions.priceFrom &&
-              product.price <= +currentFilterOptions.priceTo &&
-              product.storeIds.find((storeId: string) =>
-                currentFilterOptions.stores.has(storeId)
-              )
-          )
           .sort((a, b) => {
             if (
               a[sortingOption.sortBy as keyof ProductModel] >
@@ -128,16 +120,24 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
             )
               return sortingOption.order === 'asc' ? -1 : 1;
             return 0;
-          });
+          })
+          .filter(
+            (product) =>
+              product.price >= +currentFilterOptions.priceFrom &&
+              product.price <= +currentFilterOptions.priceTo
+          )
+          .filter((product) =>
+            product.storeIds.find((storeId: string) =>
+              currentFilterOptions.stores.has(storeId)
+            )
+          )
+          .filter(
+            (product) =>
+              Math.ceil(product.ratingValue) === currentFilterOptions.rating
+          );
       } else {
         return products
           .filter((product) => product.categoryId === category.id)
-          .filter(
-            (product) =>
-              product.price >= +currentFilterOptions.priceFrom &&
-              product.price <= +currentFilterOptions.priceTo &&
-              Math.floor(product.ratingValue) === +currentFilterOptions.rating
-          )
           .sort((a, b) => {
             if (
               a[sortingOption.sortBy as keyof ProductModel] >
@@ -150,7 +150,12 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
             )
               return sortingOption.order === 'asc' ? -1 : 1;
             return 0;
-          });
+          })
+          .filter(
+            (product) =>
+              product.price >= +currentFilterOptions.priceFrom &&
+              product.price <= +currentFilterOptions.priceTo
+          );
       }
     }),
     shareReplay(1)
@@ -184,28 +189,32 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
   ]).pipe(
     map(([products, currentValues]) => {
       let arr: number[] = [];
-      for (let i = 0; i < Math.ceil(products.length / currentValues.limit); i++) {
+      for (
+        let i = 0;
+        i < Math.ceil(products.length / currentValues.limit);
+        i++
+      ) {
         arr.push(i + 1);
       }
       return arr;
     })
   );
 
-
-
   ratingToStars(value: number): number[] {
     const arr: number[] = [];
-      
-    for(let i = 0; i < 5; i++) {
-      if(value - i >= 1) {arr.push(1)}
-      else if(value - i < 1 && value - i > 0) {arr.push(0.5)}
-      else arr.push(0);
-    } 
+
+    for (let i = 0; i < 5; i++) {
+      if (value - i >= 1) {
+        arr.push(1);
+      } else if (value - i < 1 && value - i > 0) {
+        arr.push(0.5);
+      } else arr.push(0);
+    }
 
     return arr;
   }
-  
 
+  readonly stores: FormControl = new FormControl();
   readonly priceFrom: FormControl = new FormControl();
   readonly priceTo: FormControl = new FormControl();
 
@@ -217,7 +226,7 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
     private _storesService: StoresService
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.priceFrom.valueChanges
       .pipe(
         debounceTime(250),
@@ -246,7 +255,6 @@ readonly selectedSortingOption: FormControl = new FormControl('Featured');
       )
       .subscribe();
   }
-
 
   onSortingSelectionChanged(sortingOption: SortingOptionsQueryModel): void {
     this._router.navigate([], {
