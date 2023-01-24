@@ -23,6 +23,7 @@ import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
 import { FormControl } from '@angular/forms';
 
+
 @Component({
   selector: 'app-category-products',
   styleUrls: ['./category-products.component.scss'],
