@@ -8,6 +8,16 @@
                             [routerLink]="'/categories/' + item.id" class="nav-link">{{item.name}}<i
                                 class="feather-icon icon-chevron-right"></i></a></li>
                 </ul>
+
+                <div class="row">
+                    <h5>Price</h5>
+                    <input class="form-control" type="text" placeholder="Price From" aria-label="default input example"
+                        [formControl]="priceFrom">
+                    <input class="form-control" type="text" placeholder="Price To" aria-label="default input example"
+                        [formControl]="priceTo">
+                </div>
+
+
             </div>
             <div class="col-12 col-lg-8 col-md-6">
                 <ng-container *ngIf="categoryData$ | async as item"><!-- card -->
@@ -27,8 +37,11 @@
                                 {{products.length}} Products found
                             </div>
                             <div class="col-3">
+
                                 <select class="form-select" [formControl]="selectedSortingOption">
-                                    <option *ngFor="let item of sortingOptions$ | async" [value]="item" (click)="onSortingSelectionChanged(item)">{{item.name}}
+                                    <option *ngFor="let item of sortingOptions$ | async" [value]="item"
+                                        (click)="onSortingSelectionChanged(item)">{{item.name}}
+
                                     </option>
                                 </select>
                             </div>
@@ -38,7 +51,7 @@
                     </div>
 
                     <div class="row g-4  row-cols-1 mt-2" *ngIf="categoryData$ | async as categoryData">
-                        <div *ngFor="let item of productsInCategory$ | async" class="col">
+                        <div *ngFor="let item of displayedProducts$ | async" class="col">
                             <!-- card -->
                             <div class="card card-product">
                                 <!-- card body -->
@@ -81,7 +94,30 @@
                         </div>
 
                     </div>
-
+                    <div class="row col-12" *ngIf="currentPaginationValues$ | async as currentValues">
+                        <div class="col-10">
+                            <h6>Limit:</h6>
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item" *ngFor="let item of limitOptions$ | async" [value]="item"
+                                        [ngClass]="{active: item === currentValues.limit}"><a class="page-link"
+                                            (click)="onLimitChanged(item)">{{item}}</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="col-2">
+                            <h6> Pagination:</h6>
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item" *ngFor="let item of currentPageOptions$ | async"
+                                        [value]="item" [ngClass]="{active: item === currentValues.page}"><a
+                                            class="page-link" [target]="currentValues.page"
+                                            (click)="onPageChanged(item)">{{item}}</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>
