@@ -13,6 +13,7 @@ import {
   switchMap,
   take,
   tap,
+  debounceTime,
 } from 'rxjs/operators';
 import { SortingOptionsQueryModel } from '../../query-models/sorting-options.query-model';
 import { CategoryModel } from '../../models/category.model';
@@ -20,7 +21,7 @@ import { ProductModel } from '../../models/product.model';
 import { PaginationQueryModel } from '../../query-models/pagination.query-model';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
-import { format } from 'path';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-category-products',
@@ -30,13 +31,6 @@ import { format } from 'path';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryProductsComponent {
-  readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
-    { name: 'Featured', property: 'featureValue', direction: 'desc' },
-    { name: 'Price: Low To High', property: 'price', direction: 'asc' },
-    { name: 'Price: High To Low', property: 'price', direction: 'desc' },
-    { name: 'Avg. Rating', property: 'ratingValue', direction: 'desc' },
-  ]);
-
   readonly categoryData$: Observable<CategoryModel> =
     this._activatedRoute.params.pipe(
       switchMap((data) => this._categoriesService.getOne(data['categoryId'])),
@@ -46,6 +40,15 @@ export class CategoryProductsComponent {
     .getAll()
     .pipe(shareReplay(1));
 
+  // sort
+
+  readonly sortingOptions$: Observable<SortingOptionsQueryModel[]> = of([
+    { name: 'Featured', property: 'featureValue', direction: 'desc' },
+    { name: 'Price: Low To High', property: 'price', direction: 'asc' },
+    { name: 'Price: High To Low', property: 'price', direction: 'desc' },
+    { name: 'Avg. Rating', property: 'ratingValue', direction: 'desc' },
+  ]);
+
   readonly sortingOption$: Observable<{ sortBy: string; order: string }> =
     this._activatedRoute.queryParams.pipe(
       map((params) => ({
@@ -54,23 +57,32 @@ export class CategoryProductsComponent {
       }))
     );
 
-  readonly currentPaginationValues$: Observable<PaginationQueryModel> =
-    this._activatedRoute.queryParams.pipe(
-      map((data) => {
-        return data['pageSize'] || data['pageNumber']
-          ? { limit: +data['pageSize'], page: +data['pageNumber'] }
-          : { limit: 5, page: 1 };
-      })
-    );
+  readonly currentFilterOptions$: Observable<{
+    priceFrom: number;
+    priceTo: number;
+  }> = this._activatedRoute.queryParams.pipe(
+    map((params) => {
+      return {
+        priceFrom: params['priceFrom'] ?? 0,
+        priceTo: params['priceTo'] ?? 1000,
+      };
+    })
+  );
 
   readonly productsInCategory$: Observable<ProductModel[]> = combineLatest([
     this._productsService.getAll(),
     this.categoryData$,
+    this.currentFilterOptions$,
     this.sortingOption$,
   ]).pipe(
-    map(([products, category, sortingOption]) => {
+    map(([products, category, currentFilterOptions, sortingOption]) => {
       return products
         .filter((product) => product.categoryId === category.id)
+        .filter(
+          (product) =>
+            product.price >= currentFilterOptions.priceFrom &&
+            product.price <= currentFilterOptions.priceTo
+        )
         .sort((a, b) => {
           if (
             a[sortingOption.sortBy as keyof ProductModel] >
@@ -88,14 +100,23 @@ export class CategoryProductsComponent {
     shareReplay(1)
   );
 
+  readonly currentPaginationValues$: Observable<PaginationQueryModel> =
+    this._activatedRoute.queryParams.pipe(
+      map((data) => {
+        return data['pageSize'] || data['pageNumber']
+          ? { limit: +data['pageSize'], page: +data['pageNumber'] }
+          : { limit: 5, page: 1 };
+      })
+    );
+
   readonly displayedProducts$: Observable<ProductModel[]> = combineLatest([
     this.productsInCategory$,
     this.currentPaginationValues$,
   ]).pipe(
-    map(([products, currentValues]) =>
+    map(([products, currentPaginationValues]) =>
       products.slice(
-        currentValues.limit * (currentValues.page - 1),
-        currentValues.limit * currentValues.page
+        currentPaginationValues.limit * (currentPaginationValues.page - 1),
+        currentPaginationValues.limit * currentPaginationValues.page
       )
     )
   );
@@ -114,14 +135,8 @@ export class CategoryProductsComponent {
     })
   );
 
-  onSortingSelectionChanged(sortingOption: SortingOptionsQueryModel): void {
-    this._router.navigate([], {
-      queryParams: {
-        sortBy: sortingOption.property,
-        order: sortingOption.direction,
-      },
-    });
-  }
+  readonly priceFrom: FormControl = new FormControl();
+  readonly priceTo: FormControl = new FormControl();
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -129,6 +144,46 @@ export class CategoryProductsComponent {
     private _productsService: ProductsService,
     private _router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.priceFrom.valueChanges
+      .pipe(
+        debounceTime(250),
+        tap((value) =>
+          this._router.navigate([], {
+            queryParams: {
+              priceFrom: value,
+            },
+            queryParamsHandling: 'merge',
+          })
+        )
+      )
+      .subscribe();
+
+    this.priceTo.valueChanges
+      .pipe(
+        debounceTime(250),
+        tap((priceTo) =>
+          this._router.navigate([], {
+            queryParams: {
+              priceTo: priceTo,
+            },
+            queryParamsHandling: 'merge',
+          })
+        )
+      )
+      .subscribe();
+  }
+
+  onSortingSelectionChanged(sortingOption: SortingOptionsQueryModel): void {
+    this._router.navigate([], {
+      queryParams: {
+        sortBy: sortingOption.property,
+        order: sortingOption.direction,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
 
   onLimitChanged(limit: number): void {
     this.productsInCategory$
@@ -140,6 +195,7 @@ export class CategoryProductsComponent {
               pageSize: limit,
               pageNumber: Math.ceil(products.length / limit),
             },
+            queryParamsHandling: 'merge',
           })
         )
       )
@@ -156,6 +212,7 @@ export class CategoryProductsComponent {
               pageSize: currentValues.limit,
               pageNumber: page,
             },
+            queryParamsHandling: 'merge',
           })
         )
       )

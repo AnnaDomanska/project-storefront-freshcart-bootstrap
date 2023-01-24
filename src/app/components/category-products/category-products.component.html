@@ -8,6 +8,16 @@
                             [routerLink]="'/categories/' + item.id" class="nav-link">{{item.name}}<i
                                 class="feather-icon icon-chevron-right"></i></a></li>
                 </ul>
+
+                <div class="row">
+                    <h5>Price</h5>
+                    <input class="form-control" type="text" placeholder="Price From" aria-label="default input example"
+                        [formControl]="priceFrom">
+                    <input class="form-control" type="text" placeholder="Price To" aria-label="default input example"
+                        [formControl]="priceTo">
+                </div>
+
+
             </div>
             <div class="col-12 col-lg-8 col-md-6">
                 <ng-container *ngIf="categoryData$ | async as item"><!-- card -->
