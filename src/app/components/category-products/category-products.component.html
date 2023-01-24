@@ -14,8 +14,8 @@
                         aria-label="default input example" [formControl]="searchStore">
                     <div *ngFor="let item of displayedStores$ | async" class="form-check mb-2">
                         <div *ngIf="currentFilterOptions$ | async as currentFilterOptions">
-                            <input [id]="item" class="form-check-input" type="checkbox" 
-                                (click)="onStoresChanged(item.id)" [checked]="currentFilterOptions.stores.has(item.id)"> <label [for]="item"
+                            <input [id]="item.name" class="form-check-input" type="checkbox" 
+                                (click)="onStoresChanged(item.id)" [checked]="currentFilterOptions.stores.has(item.id)"> <label [for]="item.name"
                                 class="form-check-label">{{item.name}}</label>
                         </div>
                     </div>
