@@ -5,17 +5,19 @@ import { HomeComponent } from './components/home/home.component';
 import { StoreProductsComponent } from './components/store-products/store-products.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { CategoryProductsComponentModule } from './components/category-products/category-products.component-module';
 import { HomeComponentModule } from './components/home/home.component-module';
 import { StoreProductsComponentModule } from './components/store-products/store-products.component-module';
-
+import { ProductDetailComponentModule } from './components/product-detail/product-detail.component-module';
 
 const routes: Routes = [
   { path: 'categories/:categoryId', component: CategoryProductsComponent },
   { path: '', component: HomeComponent },
   { path: 'stores/:storeId', component: StoreProductsComponent },
   { path: 'header', component: HeaderComponent },
-  { path: 'footer', component: FooterComponent }
+  { path: 'footer', component: FooterComponent },
+  { path: 'products/:productId', component: ProductDetailComponent }
 ];
 
 @NgModule({
@@ -24,6 +26,7 @@ const routes: Routes = [
     CategoryProductsComponentModule,
     HomeComponentModule,
     StoreProductsComponentModule,
+    ProductDetailComponentModule
   ],
   exports: [RouterModule],
 })
