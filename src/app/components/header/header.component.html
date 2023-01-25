@@ -38,7 +38,7 @@
                 <div class="d-block">
                     <ul class="navbar-nav">
                         <li *ngFor="let item of categories$ | async" class="nav-item"><a class="nav-link"
-                                [routerLink]="'categories/' + item.id" role="button">{{item.name}}</a></li>
+                                [routerLink]="'categories/' + item.id" role="button" (click)="showMenu(false)">{{item.name}}</a></li>
                     </ul>
                 </div>
 
