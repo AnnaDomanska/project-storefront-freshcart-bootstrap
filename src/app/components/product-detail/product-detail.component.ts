@@ -86,7 +86,7 @@ export class ProductDetailComponent {
     ) as Record<string, CategoryModel>;
 
     const productsinCategory = products.filter(
-      (product) => product.categoryId === mainProduct.categoryId
+      (product) => product.categoryId === mainProduct.categoryId && product.id !== mainProduct.id
     );
     return {
       name: mainProduct.name,
