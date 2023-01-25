@@ -11,9 +11,10 @@ export interface ProductDetailQueryModel {
     readonly logoUrl: string
     readonly id: string
   }[];
-  // readonly relatedProducts: {
-  //   readonly name: string;
-  //   readonly imageUrl: string
-  //   readonly price: number
-  // }[];
+  readonly relatedProducts: {
+    readonly name: string;
+    readonly imageUrl: string;
+    readonly price: number;
+    readonly id: string;
+  }[];
 }

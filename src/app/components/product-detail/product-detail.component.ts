@@ -24,18 +24,25 @@ export class ProductDetailComponent {
   readonly categories$: Observable<CategoryModel[]> =
     this._categoriesService.getAll();
 
-
-  readonly productDetails$: Observable<ProductDetailQueryModel> = combineLatest([
-    this._activatedRoute.params,
-    this._categoriesService.getAll(),
-    this._storesService.getAll(),
-  ]).pipe(
-    switchMap(([params, categories, stores]) =>
+  readonly productDetails$: Observable<ProductDetailQueryModel> = combineLatest(
+    [
+      this._activatedRoute.params,
+      this._categoriesService.getAll(),
+      this._storesService.getAll(),
+      this._productsService.getAll(),
+    ]
+  ).pipe(
+    switchMap(([params, categories, stores, products]) =>
       this._productsService
         .getOne(params['productId'])
         .pipe(
           map((product) =>
-            this._maptoProductDetailQueryModel(product, categories, stores)
+            this._maptoProductDetailQueryModel(
+              product,
+              categories,
+              stores,
+              products
+            )
           )
         )
     )
@@ -63,9 +70,10 @@ export class ProductDetailComponent {
   }
 
   private _maptoProductDetailQueryModel(
-    product: ProductModel,
+    mainProduct: ProductModel,
     categories: CategoryModel[],
-    stores: StoreModel[]
+    stores: StoreModel[],
+    products: ProductModel[]
   ): ProductDetailQueryModel {
     const storesMap = stores.reduce(
       (a, c) => ({ ...a, [c.id]: c }),
@@ -77,18 +85,27 @@ export class ProductDetailComponent {
       {}
     ) as Record<string, CategoryModel>;
 
+    const productsinCategory = products.filter(
+      (product) => product.categoryId === mainProduct.categoryId
+    );
     return {
-      name: product.name,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      priceBeforeDiscount: (Math.random() + 1) * product.price,
-      ratingValue: product.ratingValue,
-      ratingCount: product.ratingCount,
-      categoryName: categoriesMap[product.categoryId]?.name,
-      stores: product.storeIds.map((storeId: string) => ({
+      name: mainProduct.name,
+      price: mainProduct.price,
+      imageUrl: mainProduct.imageUrl,
+      priceBeforeDiscount: (Math.random() + 1) * mainProduct.price,
+      ratingValue: mainProduct.ratingValue,
+      ratingCount: mainProduct.ratingCount,
+      categoryName: categoriesMap[mainProduct.categoryId]?.name,
+      stores: mainProduct.storeIds.map((storeId: string) => ({
         name: storesMap[storeId]?.name,
         logoUrl: storesMap[storeId]?.logoUrl,
         id: storesMap[storeId]?.id,
+      })),
+      relatedProducts: productsinCategory.map((product) => ({
+        name: product.name,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        id: product.id
       })),
     };
   }
