@@ -8,20 +8,21 @@
                             [routerLink]="'/categories/' + item.id" class="nav-link">{{item.name}}<i
                                 class="feather-icon icon-chevron-right"></i></a></li>
                 </ul>
-        
+
 
                 <div class="row">
                     <h5>Stores</h5>
                     <input class="form-control" type="text" placeholder="Search by store"
                         aria-label="default input example" [formControl]="searchStore">
-                    <div *ngFor="let item of displayedStores$ | async" class="form-check mb-2" >
+                    <div *ngFor="let item of displayedStores$ | async" class="form-check mb-2">
                         <form *ngIf="currentFilterOptions$ | async as currentFilterOptions" [formGroup]="stores">
-                            <input [id]="item.name" class="form-check-input" type="checkbox" formControlName="{{item.id}}" [value]="item.id"> <label [for]="item.name"
+                            <input [id]="item.name" class="form-check-input" type="checkbox"
+                                formControlName="{{item.id}}" [value]="item.id"> <label [for]="item.name"
                                 class="form-check-label">{{item.name}}</label>
                         </form>
                     </div>
                 </div>
-           
+
                 <div class="row">
                     <h5>Price</h5>
                     <input class="form-control" type="text" placeholder="Price From" aria-label="default input example"
@@ -35,12 +36,13 @@
                     <div *ngFor="let ratingOption of ratingFilterOptions$ | async" class="form-check mb-2">
                         <div *ngIf="currentFilterOptions$ | async as currentFilterOptions">
                             <input [id]="ratingOption" class="form-check-input" type="radio" name="item"
-                                (click)="onRatingFilterChanged(ratingOption)" [checked]="ratingOption === +currentFilterOptions.rating">
+                                (click)="onRatingFilterChanged(ratingOption)"
+                                [checked]="ratingOption === +currentFilterOptions.rating">
                             <label [for]="ratingOption" class="form-check-label"> <small class="text-warning"> <i
-                                *ngFor="let val of ratingToStars(ratingOption)" class="bi"
-                                [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
-                        </small>
-                     </label>
+                                        *ngFor="let val of ratingToStars(ratingOption)" class="bi"
+                                        [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
+                                </small>
+                            </label>
                         </div>
 
                     </div>
@@ -84,45 +86,47 @@
 
                     <div class="row g-4  row-cols-1 mt-2" *ngIf="categoryData$ | async as categoryData">
                         <div *ngFor="let item of displayedProducts$ | async" class="col">
-                            <!-- card -->
-                            <div class="card card-product">
-                                <!-- card body -->
-                                <div class="card-body">
-                                    <div class=" row align-items-center">
-                                        <!-- col -->
-                                        <div class="col-md-4 col-12">
+                            <a [routerLink]="'/products/' + item.id">
+                                <!-- card -->
+                                <div class="card card-product">
+                                    <!-- card body -->
+                                    <div class="card-body">
+                                        <div class=" row align-items-center">
+                                            <!-- col -->
+                                            <div class="col-md-4 col-12">
 
-                                            <div class="text-center position-relative ">
+                                                <div class="text-center position-relative ">
 
-                                                <!-- img --><img [src]="item.imageUrl" [alt]="item.name"
-                                                    class="mb-3 img-fluid">
+                                                    <!-- img --><img [src]="item.imageUrl" [alt]="item.name"
+                                                        class="mb-3 img-fluid">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-8 col-12 flex-grow-1">
-                                            <!-- heading -->
-                                            <div class="text-small mb-1"><small>{{categoryData.name}}</small>
-                                            </div>
-                                            <h2 class="fs-6">{{item.name}}
-                                            </h2>
+                                            <div class="col-md-8 col-12 flex-grow-1">
+                                                <!-- heading -->
+                                                <div class="text-small mb-1"><small>{{categoryData.name}}</small>
+                                                </div>
+                                                <h2 class="fs-6">{{item.name}}
+                                                </h2>
 
-                                            <div>
+                                                <div>
 
 
-                                            </div>
-                                            <small class="text-warning"> <i
-                                                    *ngFor="let val of ratingToStars(item.ratingValue)" class="bi"
-                                                    [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
-                                            </small>
-                                            <span
-                                                class="text-muted small">{{item.ratingValue}}({{item.ratingCount}})</span>
+                                                </div>
+                                                <small class="text-warning"> <i
+                                                        *ngFor="let val of ratingToStars(item.ratingValue)" class="bi"
+                                                        [ngClass]="{'bi-star-fill': val === 1, 'bi-star': val === 0, 'bi-star-half': val === 0.5}"></i>
+                                                </small>
+                                                <span
+                                                    class="text-muted small">{{item.ratingValue}}({{item.ratingCount}})</span>
 
-                                            <!-- price -->
-                                            <div><span class="text-dark">{{item.price | currency}}</span>
+                                                <!-- price -->
+                                                <div><span class="text-dark">{{item.price | currency}}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
 
                     </div>
