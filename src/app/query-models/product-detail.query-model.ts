@@ -6,6 +6,7 @@ export interface ProductDetailQueryModel {
   readonly ratingValue: number;
   readonly ratingCount: number;
   readonly categoryName: string;
+  readonly categoryId: string;
   readonly stores: {
     readonly name: string,
     readonly logoUrl: string

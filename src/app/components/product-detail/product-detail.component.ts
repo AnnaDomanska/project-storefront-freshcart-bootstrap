@@ -96,6 +96,7 @@ export class ProductDetailComponent {
       ratingValue: mainProduct.ratingValue,
       ratingCount: mainProduct.ratingCount,
       categoryName: categoriesMap[mainProduct.categoryId]?.name,
+      categoryId: mainProduct.categoryId,
       stores: mainProduct.storeIds.map((storeId: string) => ({
         name: storesMap[storeId]?.name,
         logoUrl: storesMap[storeId]?.logoUrl,
