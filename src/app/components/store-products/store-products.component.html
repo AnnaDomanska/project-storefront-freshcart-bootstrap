@@ -53,7 +53,8 @@
                 <div class="grid">
                     <div class="card-body text-center py-8"><!-- img --><img [src]="item.imageUrl" [alt]="item.name"
                             class="mb-3"><!-- text -->
-                        <div class="text-truncate">{{item.name}}</div>
+                            <h5 class="fs-6 mb-0"> <a class="text-inherit"
+                                [routerLink]="'/products/' + item.id">{{item.name}}</a></h5>
                     </div>
                 </div>
             </div>
