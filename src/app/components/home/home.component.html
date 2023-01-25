@@ -1,4 +1,3 @@
-
 <section class="my-lg-14 my-8">
     <div class="container">
         <h3>Shop by category</h3>
@@ -21,17 +20,18 @@
 <section class="my-lg-14 my-8">
     <div class="container" *ngIf="fruitsAndVegetables$ | async as fruitsAndVegetables">
         <h3>{{fruitsAndVegetables.categoryName}}</h3>
-<div class="row row-cols-lg-5">
-        <div *ngFor="let item of fruitsAndVegetables.products"><!-- card -->
-            <div class="card card-product">
-                <div class="card-body text-center py-8"><!-- img --><img [src]="item.imageUrl" [alt]="item.name"
-                        class="mb-3"><!-- text -->
-                    <div class="text-start">{{item.name}}</div>
-                    <div class="text-start">{{item.price | currency}}</div>
-                </div>
+        <div class="row row-cols-lg-5">
+            <div *ngFor="let item of fruitsAndVegetables.products"><a [routerLink]="'/products/' + item.id"><!-- card -->
+                    <div class="card card-product">
+                        <div class="card-body text-center py-8"><!-- img --><img [src]="item.imageUrl" [alt]="item.name"
+                                class="mb-3"><!-- text -->
+                            <div class="text-start">{{item.name}}</div>
+                            <div class="text-start">{{item.price | currency}}</div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
         <div class="row">
 
         </div>
@@ -42,15 +42,15 @@
     <div class="container" *ngIf="snackAndMunchies$ | async as snackAndMunchies">
         <h3>{{snackAndMunchies.categoryName}}</h3>
         <div class="row row-cols-lg-5">
-        <div *ngFor="let item of snackAndMunchies.products" class="col"><!-- card -->
-            <div class="card card-product">
-                <div class="card-body text-center py-8"><!-- img --><img [src]="item.imageUrl" [alt]="item.name"
-                        class="mb-3"><!-- text -->
-                    <div class="text-start">{{item.name}}</div>
-                    <div class="text-start">{{item.price | currency}}</div>
+            <div *ngFor="let item of snackAndMunchies.products" class="col"><!-- card -->
+                <div class="card card-product">
+                    <div class="card-body text-center py-8"><!-- img --><img [src]="item.imageUrl" [alt]="item.name"
+                            class="mb-3"><!-- text -->
+                        <div class="text-start">{{item.name}}</div>
+                        <div class="text-start">{{item.price | currency}}</div>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
         <div class="row">
 

@@ -95,7 +95,7 @@ export class HomeComponent {
   private _mapToCategoryWithProductsQueryModel(
     category: CategoryModel,
     products: ProductModel[]
-  ): { name: string; price: number; imageUrl: string }[] {
+  ): { name: string; price: number; imageUrl: string; id: string }[] {
     const displayedProducts = products
       .filter((product) => product.categoryId === category.id)
       .sort((a, b) => (a.featureValue > b.featureValue ? -1 : 1))
@@ -105,6 +105,7 @@ export class HomeComponent {
       name: product.name,
       price: Math.round(product.price),
       imageUrl: product.imageUrl,
+      id: product.id
     }));
   }
 }
