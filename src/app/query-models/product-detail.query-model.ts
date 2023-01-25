@@ -3,7 +3,6 @@ export interface ProductDetailQueryModel {
   readonly price: number;
   readonly imageUrl: string
   readonly priceBeforeDiscount: number;
-  readonly discountInPercentages: number;
   readonly ratingValue: number;
   readonly ratingCount: number;
   readonly categoryName: string;
@@ -12,9 +11,9 @@ export interface ProductDetailQueryModel {
     readonly logoUrl: string
     readonly id: string
   }[];
-  readonly relatedProducts: {
-    readonly name: string;
-    readonly imageUrl: string
-    readonly price: number
-  }[];
+  // readonly relatedProducts: {
+  //   readonly name: string;
+  //   readonly imageUrl: string
+  //   readonly price: number
+  // }[];
 }
