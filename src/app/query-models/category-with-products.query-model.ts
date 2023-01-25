@@ -4,6 +4,7 @@ export interface CategoryWithProductsQueryModel {
   readonly products: {
     name: string;
     price: number;
-    imageUrl: string
+    imageUrl: string;
+    id: string;
   }[];
 }
