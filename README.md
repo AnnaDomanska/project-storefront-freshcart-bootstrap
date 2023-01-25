@@ -29,3 +29,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Deployed on Netlify
 
 https://project-freshcart.netlify.app/
+
+with products detail page (small correction needed): https://deploy-preview-15--project-freshcart.netlify.app/
