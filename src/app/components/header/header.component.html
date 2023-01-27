@@ -14,16 +14,25 @@
                             src="/assets/images/logo/freshcart-logo.svg" alt="eCommerce HTML Template"> </a>
                     <div class="d-flex justify-content-between w-100 d-lg-none"> <a class="navbar-brand" routerLink="/">
                             <img src="/assets/images/logo/freshcart-logo.svg" alt="eCommerce HTML Template"> </a>
+
                         <div class="d-flex align-items-center lh-1"> <!-- Button --> <button
                                 class="navbar-toggler collapsed" type="button" aria-controls="navbar-default"
                                 aria-label="Toggle navigation" (click)="showMenu(true)"> <span
                                     class="icon-bar top-bar mt-0"></span> <span class="icon-bar middle-bar"></span>
                                 <span class="icon-bar bottom-bar"></span>
                             </button> </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+        <div class="m-6">
+            <button class="btn btn-primary" type="submit" [routerLink]="'/shopping-cart'"><i class="bi bi-cart4"></i></button>
+        </div>
+
     </div>
 </header>
 <div class="border-bottom pb-lg-4 pb-3">
@@ -35,10 +44,12 @@
                         routerLink="/"><img src="/assets/images/logo/freshcart-logo.svg"
                             alt="eCommerce HTML Template"></a> <button type="button" class="btn-close"
                         aria-label="Close" (click)="showMenu(false)"></button> </div>
+
                 <div class="d-block">
                     <ul class="navbar-nav">
                         <li *ngFor="let item of categories$ | async" class="nav-item"><a class="nav-link"
-                                [routerLink]="'categories/' + item.id" role="button" (click)="showMenu(false)">{{item.name}}</a></li>
+                                [routerLink]="'categories/' + item.id" role="button"
+                                (click)="showMenu(false)">{{item.name}}</a></li>
                     </ul>
                 </div>
 
