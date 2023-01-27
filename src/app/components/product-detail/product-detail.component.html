@@ -27,7 +27,8 @@
                                 <div class="col-md-6">
                                     <div class="ps-lg-10 mt-6 mt-md-0">
                                         <!-- content -->
-                                        <a [routerLink]="'/categories/' + product.categoryId" class="mb-4 d-block">{{product.categoryName}}</a>
+                                        <a [routerLink]="'/categories/' + product.categoryId"
+                                            class="mb-4 d-block">{{product.categoryName}}</a>
                                         <!-- heading -->
                                         <h1 class="mb-1">{{product.name}} </h1>
                                         <div class="mb-4">
@@ -47,6 +48,10 @@
                                                     class="fs-6 ms-2 text-danger">{{(product.priceBeforeDiscount-product.price)/product.priceBeforeDiscount
                                                     * 100 | number: '1.1-2'}} %
                                                     Off</small></span>
+                                            
+                                        </div>
+                                        <div class="row mt-8">
+                                            <button type="button" class="btn btn-primary btn-lg" (click)="addProductToCart(product)">Add to cart</button>
                                         </div>
 
 
@@ -123,12 +128,15 @@
                                     <h3>Related products </h3>
                                 </div>
 
-                                <div class="col-lg-4" *ngFor="let relatedProduct of product.relatedProducts.slice(0,6)"> <!-- img -->
-                                    <img [src]="relatedProduct.imageUrl" [alt]="relatedProduct.name" class="card-image rounded-circle">
+                                <div class="col-lg-4" *ngFor="let relatedProduct of product.relatedProducts.slice(0,6)">
+                                    <!-- img -->
+                                    <img [src]="relatedProduct.imageUrl" [alt]="relatedProduct.name"
+                                        class="card-image rounded-circle">
                                     <!-- text -->
                                     <div class="mt-4">
                                         <h5 class="fs-6 mb-0"> <a class="text-inherit"
-                                                [routerLink]="'/products/' + relatedProduct.id">{{relatedProduct.name}}</a></h5>
+                                                [routerLink]="'/products/' + relatedProduct.id">{{relatedProduct.name}}</a>
+                                        </h5>
                                     </div>
                                 </div>
 

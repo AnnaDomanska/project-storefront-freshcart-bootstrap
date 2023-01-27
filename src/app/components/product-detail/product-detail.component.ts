@@ -1,18 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { CategoryModel } from '../../models/category.model';
+import { ProductDetailQueryModel } from '../../query-models/product-detail.query-model';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
 import { StoresService } from '../../services/stores.service';
+import { ShoppingCartService } from '../../services/shopping-cart.service';
 import { ProductModel } from '../../models/product.model';
 import { StoreModel } from '../../models/store.model';
-import { ProductDetailQueryModel } from '../../query-models/product-detail.query-model';
 
 @Component({
   selector: 'app-product-detail',
@@ -52,8 +49,8 @@ export class ProductDetailComponent {
     private _categoriesService: CategoriesService,
     private _activatedRoute: ActivatedRoute,
     private _productsService: ProductsService,
-    private _storesService: StoresService
-  ) {}
+    private _storesService: StoresService, private _shoppingCartService: ShoppingCartService
+  ) { }
 
   ratingToStars(value: number): number[] {
     const arr: number[] = [];
@@ -89,6 +86,7 @@ export class ProductDetailComponent {
       (product) => product.categoryId === mainProduct.categoryId && product.id !== mainProduct.id
     );
     return {
+      id: mainProduct.id,
       name: mainProduct.name,
       price: mainProduct.price,
       imageUrl: mainProduct.imageUrl,
@@ -109,5 +107,10 @@ export class ProductDetailComponent {
         id: product.id
       })),
     };
+  }
+
+  addProductToCart(product: ProductDetailQueryModel): void {
+    this._shoppingCartService.addProductToCart(product);
+    console.log(product.name + ' in cart!');
   }
 }
