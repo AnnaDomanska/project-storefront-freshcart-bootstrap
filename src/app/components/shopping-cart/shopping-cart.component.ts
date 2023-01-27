@@ -4,7 +4,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProductModel } from '../../models/product.model';
+import { ProductDetailQueryModel } from 'src/app/query-models/product-detail.query-model';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 
 @Component({
@@ -14,8 +14,8 @@ import { ShoppingCartService } from '../../services/shopping-cart.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShoppingCartComponent {
-  readonly displayedProducts$: Observable<ProductModel[]> =
-    this._shoppingCartService.productsInCart$;
+  readonly displayedProducts$: Observable<ProductDetailQueryModel[]> =
+    this._shoppingCartService.productsInCart$
 
   constructor(private _shoppingCartService: ShoppingCartService) {}
 }
