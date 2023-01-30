@@ -1,0 +1,46 @@
+<section class="my-lg-14 my-8">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mb-6">
+                <h3 class="mb-1">Shopping cart</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="my-lg-14 my-8">
+    <ng-container *ngIf="displayedProducts$ | async as products">
+        <div class="container">
+            <div class="alert alert-primary" role="alert" *ngIf="products.length === 0; else delivery">
+                <h5>
+                    Your cart is empty. <a [routerLink]="'/'"> Start shopping now. </a> </h5>
+            </div>
+            <ng-template #delivery>
+                <div class="alert alert-danger" role="alert" *ngIf="sumPrices(products) < 100; else freeDelivery">
+                    To free delivery you need {{100 - sumPrices(products) | currency}}. <a [routerLink]="'/'"> Continue
+                        shopping. </a>
+                </div>
+                <ng-template #freeDelivery>
+                    <div class="alert alert-success" role="alert">
+                        You have a free delivery. :)
+                    </div>
+                </ng-template>
+            </ng-template>
+        </div>
+    </ng-container>
+</section>
+
+<section class="my-lg-14 my-8">
+    <div class="col-8 mb-6 ml-6 pl-6">
+        <table class="table" *ngFor="let product of displayedProducts$ | async">
+            <tbody>
+                <tr>
+                    <td><img [src]="product.imageUrl" [alt]="product.name"></td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.price | currency}}</td>
+                    <td><button (click)="removeProductFromCart(product)">remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
