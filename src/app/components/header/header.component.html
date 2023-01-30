@@ -29,9 +29,14 @@
             </div>
 
         </div>
-        <div class="m-6">
-            <button class="btn btn-primary" type="submit" [routerLink]="'/shopping-cart'"><i class="bi bi-cart4"></i></button>
+        <ng-container *ngIf="productsInCart$ | async as products">
+        <div class="m-6" >
+            <button class="btn btn-primary" type="submit" [routerLink]="'/shopping-cart'"><i class="bi bi-cart4">  <span class="position top-0 start-50 translate-middle badge rounded-pill bg-primary">
+                {{products.length}}
+              </span>
+            </i></button>
         </div>
+    </ng-container>
 
     </div>
 </header>
