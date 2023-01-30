@@ -1,10 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProductDetailQueryModel } from 'src/app/query-models/product-detail.query-model';
+import { ProductDetailQueryModel } from '../../query-models/product-detail.query-model';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 
 @Component({
@@ -17,5 +13,9 @@ export class ShoppingCartComponent {
   readonly displayedProducts$: Observable<ProductDetailQueryModel[]> =
     this._shoppingCartService.productsInCart$
 
-  constructor(private _shoppingCartService: ShoppingCartService) {}
+  constructor(private _shoppingCartService: ShoppingCartService) { }
+
+  removeProductFromCart(product: ProductDetailQueryModel): void {
+    this._shoppingCartService.removeProductFromCart(product);
+  }
 }
