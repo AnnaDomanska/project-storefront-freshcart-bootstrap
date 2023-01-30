@@ -9,17 +9,27 @@
 </section>
 
 <section class="my-lg-14 my-8">
-    <div class="container">
-        <div class="row">
-            <div class="alert alert-success" role="alert">
-                A simple success alert—check it out!
+    <ng-container *ngIf="displayedProducts$ | async as products">
+        <div class="container">
+            <div class="alert alert-primary" role="alert" *ngIf="products.length === 0; else delivery">
+                <h5>
+                    Your cart is empty. <a [routerLink]="'/'"> Start shopping now. </a> </h5>
             </div>
-            <div class="alert alert-danger" role="alert">
-                To FREE delivery you need...
-            </div>
+            <ng-template #delivery>
+                <div class="alert alert-danger" role="alert" *ngIf="sumPrices(products) < 100; else freeDelivery">
+                    To free delivery you need {{100 - sumPrices(products) | currency}}. <a [routerLink]="'/'"> Continue
+                        shopping. </a>
+                </div>
+                <ng-template #freeDelivery>
+                    <div class="alert alert-success" role="alert">
+                        You have a free delivery. :)
+                    </div>
+                </ng-template>
+            </ng-template>
         </div>
-    </div>
+    </ng-container>
 </section>
+
 <section class="my-lg-14 my-8">
     <div class="col-8 mb-6 ml-6 pl-6">
         <table class="table" *ngFor="let product of displayedProducts$ | async">

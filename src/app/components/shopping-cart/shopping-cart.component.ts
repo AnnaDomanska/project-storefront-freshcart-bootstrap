@@ -18,4 +18,8 @@ export class ShoppingCartComponent {
   removeProductFromCart(product: ProductDetailQueryModel): void {
     this._shoppingCartService.removeProductFromCart(product);
   }
+
+  sumPrices(products: ProductDetailQueryModel[]): number {
+   return products.map((product) => product.price).reduce((a, c) => a + c);
+  }
 }
